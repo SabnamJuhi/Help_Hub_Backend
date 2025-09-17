@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'node:18'   // Use official Node.js image
+      args '-p 3000:3000'  // optional: expose ports if needed
+    }
+  }
 
   stages {
     stage('Checkout') {
