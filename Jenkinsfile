@@ -53,8 +53,9 @@ pipeline {
         }
       }
     }
-
-    post {
+  
+  }
+   post {
       success {
         echo "Pipeline succeeded."
       }
@@ -65,6 +66,4 @@ pipeline {
         archiveArtifacts artifacts: 'build/**', allowEmptyArchive: true
       }
     }
-  
-  }
 }
