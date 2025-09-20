@@ -26,7 +26,7 @@ pipeline {
     }
 
       stage('Deploy to Dev') {
-      when { branch 'develop' }
+      when { branch 'dev' }
       steps {
         withCredentials([string(credentialsId: 'render_hook_dev', variable: 'RENDER_HOOK')]) {
           sh "curl -s -X POST \"$RENDER_HOOK\""
@@ -35,7 +35,7 @@ pipeline {
     }
 
     stage('Deploy to Staging') {
-      when { branch 'staging' }
+      when { branch 'test' }
       steps {
         withCredentials([string(credentialsId: 'render_hook_test', variable: 'RENDER_HOOK')]) {
           sh "curl -s -X POST \"$RENDER_HOOK\""
