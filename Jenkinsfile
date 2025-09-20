@@ -25,12 +25,45 @@ pipeline {
       }
     }
 
-    stage('Trigger Render Deploy') {
+      stage('Deploy to Dev') {
+      when { branch 'dev' }
       steps {
-        withCredentials([string(credentialsId: 'render_hook', variable: 'RENDER_HOOK')]) {
-          sh 'curl -X POST "$RENDER_HOOK"'
+        withCredentials([string(credentialsId: 'render_hook_dev', variable: 'RENDER_HOOK')]) {
+          sh "curl -s -X POST \"$RENDER_HOOK\""
         }
       }
     }
+
+    stage('Deploy to Staging') {
+      when { branch 'test' }
+      steps {
+        withCredentials([string(credentialsId: 'render_hook_test', variable: 'RENDER_HOOK')]) {
+          sh "curl -s -X POST \"$RENDER_HOOK\""
+        }
+      }
+    }
+
+    stage('Deploy to Production') {
+      when { branch 'main' }
+      steps {
+        // require manual approval
+        input message: "Approve deploy to Production?", ok: "Deploy"
+        withCredentials([string(credentialsId: 'render_hook_prod', variable: 'RENDER_HOOK')]) {
+          sh "curl -s -X POST \"$RENDER_HOOK\""
+        }
+      }
+    }
+  
   }
+   post {
+      success {
+        echo "Pipeline succeeded."
+      }
+      failure {
+        echo "Pipeline failed."
+      }
+      always {
+        archiveArtifacts artifacts: 'build/**', allowEmptyArchive: true
+      }
+    }
 }
