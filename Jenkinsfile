@@ -9,7 +9,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/SabnamJuhi/Help_Hub_Backend.git'
+        checkout scm
       }
     }
 
@@ -62,9 +62,7 @@ pipeline {
       failure {
         echo "Pipeline failed."
       }
-      always {
-        archiveArtifacts artifacts: 'build/**', allowEmptyArchive: true
-      }
+    
   }
 }
 
