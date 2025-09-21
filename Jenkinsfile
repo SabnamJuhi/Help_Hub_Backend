@@ -6,45 +6,39 @@ pipeline {
     }
   }
 
-  stages {
-    stage('Checkout') {
-      steps {
-        git branch: 'main', url: 'https://github.com/SabnamJuhi/Help_Hub_Backend.git'
-      }
-    }
 
-    stage('Install') {
-      steps {
+  stage('Install') {
+    steps {
         sh 'npm ci'
       }
-    }
+  }
 
-    stage('Test') {
+  stage('Test') {
       steps {
         sh 'npm test || true'
       }
-    }
+  }
 
-      stage('Deploy to Dev') {
-      when { branch 'dev' }
+  stage('Deploy to Dev') {
+      when { expression { env.BRANCH_NAME == 'dev' } }
       steps {
         withCredentials([string(credentialsId: 'render_hook_dev', variable: 'RENDER_HOOK')]) {
           sh "curl -s -X POST \"$RENDER_HOOK\""
         }
       }
-    }
+  }
 
-    stage('Deploy to Staging') {
-      when { branch 'test' }
+  stage('Deploy to Staging') {
+      when { expression { env.BRANCH_NAME == 'test' } }
       steps {
         withCredentials([string(credentialsId: 'render_hook_test', variable: 'RENDER_HOOK')]) {
           sh "curl -s -X POST \"$RENDER_HOOK\""
         }
       }
-    }
+  }
 
-    stage('Deploy to Production') {
-      when { branch 'main' }
+  stage('Deploy to Production') {
+      when { expression { env.BRANCH_NAME == 'main' } }
       steps {
         // require manual approval
         input message: "Approve deploy to Production?", ok: "Deploy"
@@ -52,18 +46,16 @@ pipeline {
           sh "curl -s -X POST \"$RENDER_HOOK\""
         }
       }
-    }
-  
   }
-   post {
+  post {
       success {
         echo "Pipeline succeeded."
       }
       failure {
         echo "Pipeline failed."
       }
-      always {
-        archiveArtifacts artifacts: 'build/**', allowEmptyArchive: true
-      }
-    }
+    
+  }
+  
 }
+ 
