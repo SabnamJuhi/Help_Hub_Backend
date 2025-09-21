@@ -6,6 +6,7 @@
   "scripts": {
   "dev": "node app.js",
   "start": "node app.js",
+  "start:test": "node app.js",
   "test": "echo \"No tests yet\" && exit 0",
   "build": "echo \"No build step for backend\""
   },
