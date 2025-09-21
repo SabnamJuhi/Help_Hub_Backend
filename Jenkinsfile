@@ -25,7 +25,7 @@ pipeline {
     }
 
     stage('Deploy to Dev') {
-      when { expression { env.BRANCH_NAME == 'dev' } }
+      when { expression { env.BRANCH_NAME == 'origin/dev' } }
       steps {
         withCredentials([string(credentialsId: 'render_hook_dev', variable: 'RENDER_HOOK')]) {
           sh "curl -s -X POST \"$RENDER_HOOK\""
@@ -34,7 +34,7 @@ pipeline {
     }
 
     stage('Deploy to Staging') {
-      when { expression { env.BRANCH_NAME == 'test' } }
+      when { expression { env.BRANCH_NAME == 'origin/test' } }
       steps {
         withCredentials([string(credentialsId: 'render_hook_test', variable: 'RENDER_HOOK')]) {
           sh "curl -s -X POST \"$RENDER_HOOK\""
@@ -43,7 +43,7 @@ pipeline {
     }
 
     stage('Deploy to Production') {
-      when { expression { env.BRANCH_NAME == 'main' } }
+      when { expression { env.BRANCH_NAME == 'origin/main' } }
       steps {
         input message: "Approve deploy to Production?", ok: "Deploy"
         withCredentials([string(credentialsId: 'render_hook_prod', variable: 'RENDER_HOOK')]) {
