@@ -1,4 +1,7 @@
 pipeline {
+  environment {
+  BRANCH_NAME = "${env.BRANCH_NAME}"
+  }
   agent {
     docker {
       image 'node:18'
