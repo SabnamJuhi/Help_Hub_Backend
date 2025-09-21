@@ -11,9 +11,11 @@ pipeline {
 
   stages {
     stage('Debug Branch') {
-            steps {
-                echo "Detected branch name: ${env.BRANCH_NAME}"
-            }
+    steps {
+      withEnv(["BRANCH_NAME=${env.BRANCH_NAME}"]) {
+        sh 'echo "Detected branch name: $BRANCH_NAME"'
+      }
+    }
     }
     stage('Install') {
       steps {
