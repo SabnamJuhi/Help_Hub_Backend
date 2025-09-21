@@ -7,6 +7,11 @@ pipeline {
   }
 
   stages {
+    stage('Debug Branch') {
+            steps {
+                echo "Detected branch name: ${env.BRANCH_NAME}"
+            }
+    }
     stage('Install') {
       steps {
         sh 'npm ci'
